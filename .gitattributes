@@ -1,0 +1,45 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Java sources
+*.java text diff=java
+*.gradle text diff=java
+*.gradle.kts text diff=java
+
+# These files are text and should be normalized (Convert crlf => lf)
+*.css text
+*.df text
+*.htm text
+*.html text
+*.js text
+*.jsx text
+*.json text
+*.less text
+*.properties text
+*.sass text
+*.scss text
+*.sh text
+*.sql text
+*.txt text
+*.ts text
+*.tsx text
+*.xml text
+*.yaml text
+*.yml text
+
+# These files are binary and should be left untouched
+*.class binary
+*.dll binary
+*.ear binary
+*.jar binary
+*.so binary
+*.war binary
+*.jks binary
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary

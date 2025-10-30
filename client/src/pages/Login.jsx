@@ -4,6 +4,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const [isCreateAccount, setIsCreateAccount] = useState(false);
@@ -12,7 +13,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const { backendUrl , getUserData } = useContext(AppContext);
+    const { backendUrl , getUserData, setIsLoggedIn } = useContext(AppContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -55,7 +56,8 @@ const Login = () => {
 
                 if (response.status === 200) {
                     toast.success("Login successful!");
-                    getUserData();
+                    setIsLoggedIn(true);
+                    await getUserData();
                     navigate('/'); // redirect to home/dashboard
                 } else {
                     toast.error(response.data.message || "Login failed.");
@@ -162,9 +164,12 @@ const Login = () => {
                                         Remember me
                                     </label>
                                 </div>
-                                <a href="#!" className="small text-decoration-none">
-                                    Forgot password?
-                                </a>
+                                <div className="text-end mt-2">
+                                    <Link to="/reset-password" className="text-decoration-none text-primary">
+                                        Forgot Password?
+                                    </Link>
+                                </div>
+
                             </div>
                         )}
 
