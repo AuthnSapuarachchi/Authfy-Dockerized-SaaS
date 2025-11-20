@@ -85,23 +85,43 @@ const Menubar = () => {
 
             {/* 🔹 Right Side: User Info or Login */}
             {userData ? (
-                <div className="position-relative" ref={dropdownRef}>
-                    {/* Avatar */}
-                    <div
-                        className="bg-primary text-white fw-semibold rounded-circle d-flex justify-content-center align-items-center shadow-sm"
+                <div className="d-flex align-items-center gap-3">
+                    {/* Dashboard Button */}
+                    <button 
+                        className="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-flex align-items-center fw-semibold"
+                        onClick={() => navigate("/dashboard")}
                         style={{
-                            width: "42px",
-                            height: "42px",
-                            cursor: "pointer",
-                            transition: "transform 0.2s ease",
+                            transition: "all 0.2s ease",
                         }}
-                        onClick={() => setDropdownOpen((prev) => !prev)}
-                        title={userData.name}
-                        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "translateY(-2px)";
+                            e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.15)";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.boxShadow = "";
+                        }}
                     >
-                        {userData.name.charAt(0).toUpperCase()}
-                    </div>
+                        <i className="bi bi-speedometer2 me-2"></i> Dashboard
+                    </button>
+
+                    {/* Avatar with Dropdown */}
+                    <div className="position-relative" ref={dropdownRef}>
+                        <div
+                            className="bg-primary text-white fw-semibold rounded-circle d-flex justify-content-center align-items-center shadow-sm"
+                            style={{
+                                width: "42px",
+                                height: "42px",
+                                cursor: "pointer",
+                                transition: "transform 0.2s ease",
+                            }}
+                            onClick={() => setDropdownOpen((prev) => !prev)}
+                            title={userData.name}
+                            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                        >
+                            {userData.name.charAt(0).toUpperCase()}
+                        </div>
 
                     {/* Dropdown */}
                     {dropdownOpen && (
@@ -136,6 +156,7 @@ const Menubar = () => {
                             </div>
                         </div>
                     )}
+                    </div>
                 </div>
             ) : (
                 // 🔹 Login Button

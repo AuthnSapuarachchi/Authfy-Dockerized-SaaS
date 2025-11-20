@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # 1. The Spring Boot Backend
+  backend:
+    build: ./authBuilder  # Path to backend folder
+    container_name: authfy-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/authfy_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=12345
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Allows Linux to talk to Windows
+    networks:
+      - authfy-net
+
+  # 2. The React Frontend
+  frontend:
+    build: ./client  # Path to frontend folder
+    container_name: authfy-ui
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend  # Wait for backend to start
+    networks:
+      - authfy-net
+
+# Create a private network for them to talk
+networks:
+  authfy-net:
+    driver: bridge

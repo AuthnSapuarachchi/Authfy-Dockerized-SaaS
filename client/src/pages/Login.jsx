@@ -58,7 +58,7 @@ const Login = () => {
                     toast.success("Login successful!");
                     setIsLoggedIn(true);
                     await getUserData();
-                    navigate('/'); // redirect to home/dashboard
+                    navigate('/dashboard'); // redirect to home/dashboard
                 } else {
                     toast.error(response.data.message || "Login failed.");
                 }
