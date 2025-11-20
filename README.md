@@ -1,161 +1,121 @@
-Authfy - Enterprise API Management SaaS
+# Authfy — Enterprise API Management SaaS
 
-A secure, developer-focused Identity & Access Management (IAM) platform that allows SaaS companies to issue, manage, and validate API keys for their own customers.
+A secure, developer-focused Identity & Access Management (IAM) platform that lets SaaS teams issue, manage, and validate API keys for their customers — without reinventing key management.
 
-📖 Overview
+## Overview
 
-Authfy is a full-stack microservices application designed to solve the "API Authentication" problem for developers. Instead of building complex key management systems from scratch, developers can use Authfy to generate secure, hashed API keys and validate them via a high-performance Spring Boot middleware.
+Authfy is a full-stack microservices application that solves the "API authentication" problem for developers. Instead of building complex key management systems from scratch, Authfy generates secure, hashed API keys and validates them using a high-performance Spring Boot middleware.
 
-Key Capabilities:
+Key highlights:
+- Zero-knowledge API key storage (keys are hashed with SHA-256)
+- Fast, stateless validation middleware
+- Developer-first UX for key issuance, listing, and revocation
+- Containerized for easy local development and deployment
 
-Identity Provider: Full user registration, login (JWT), and email verification.
+## Key Capabilities
 
-Key Management: Generate, list, and revoke API keys instantly.
+- Identity Provider
+  - User registration and login with JWT
+  - Email verification workflows
+- Key Management
+  - Generate API keys (displayed once)
+  - List and revoke keys instantly
+- Security
+  - Keys are never stored in plaintext — only SHA-256 hashes are persisted
+  - Stateless validation: incoming keys are hashed and compared to stored hashes
+- DevOps
+  - Fully containerized with multi-stage Docker builds
+  - Frontend served behind Nginx
 
-Security: Zero-knowledge architecture (Keys are hashed SHA-256), Stateless Authentication.
+## Tech Stack & Architecture
 
-DevOps: Fully containerized architecture using Docker & Nginx.
+- Frontend: React.js + Vite, Tailwind CSS, served via Nginx (Alpine)
+- Backend: Spring Boot 3 (Java 21)
+- Database: MySQL 8.0
+- Security: Spring Security 6 with custom filter chains for JWT & API key validation
+- DevOps: Docker / Docker Compose for orchestration
 
-🚀 Tech Stack & Architecture
+The project follows a microservices architecture and is orchestrated via Docker Compose for local development.
 
-The project follows a Microservices Architecture orchestrated via Docker Compose.
-
-Component
-
-Technology
-
-Description
-
-Frontend
-
-React.js + Vite
-
-Built with Tailwind CSS, served via Nginx (Alpine Linux).
-
-Backend
-
-Spring Boot 3
-
-Java 21 API handling Auth, Keys, and Validation Logic.
-
-Database
-
-MySQL 8.0
-
-Persistent storage for Users and Hashed Keys.
-
-Security
-
-Spring Security 6
-
-Custom Filter Chains for JWT & API Key validation.
-
-DevOps
-
-Docker
-
-Multi-Stage Builds for optimized, secure images.
-
-🛠️ Quick Start (Run Locally)
-
-You can run the entire infrastructure with a single command. No Java or Node.js installation required.
-
-Prerequisites
-
-Docker Desktop (Running)
-
-Git
-
-Installation
-
-Clone the repository
-
-git clone [https://github.com/YOUR_USERNAME/Authfy-Dockerized-SaaS.git](https://github.com/YOUR_USERNAME/Authfy-Dockerized-SaaS.git)
-cd Authfy-Dockerized-SaaS
-
-
-Start the Application
-Run this command to build images and start containers:
-
-docker-compose up --build
-
-
-Access the App
-
-Frontend (UI): http://localhost:3000
-
-Backend (API): http://localhost:8080
-
-Stop the App
-
-docker-compose down
-
-
-📂 Project Structure
+## Project Structure
 
 Authfy-Dockerized-SaaS/
-├── docker-compose.yml      # Main Orchestration File (Full Stack)
+├── docker-compose.yml      # Main orchestration (full stack)
 │
-├── backend/                # Spring Boot Microservice
-│   ├── Dockerfile          # Multi-Stage Java 21 Build (Maven -> JRE)
+├── backend/                # Spring Boot microservice
+│   ├── Dockerfile          # Multi-stage Java 21 build (Maven -> JRE)
 │   ├── src/
 │   └── pom.xml
 │
-└── client/                 # React Frontend
-    ├── Dockerfile          # Multi-Stage Node + Nginx Build
-    ├── nginx.conf          # Custom Nginx Router for React
+└── client/                 # React frontend
+    ├── Dockerfile          # Multi-stage Node + Nginx build
+    ├── nginx.conf          # Nginx routing for SPA
     ├── src/
     └── package.json
 
+## Quick Start (Run locally)
 
-🔒 Security & DevOps Features
+No Java or Node installation required — Docker handles everything.
 
-1. Multi-Stage Docker Builds
+Prerequisites
+- Docker Desktop (running)
+- Git
 
-We use multi-stage builds to keep production images small and secure. Source code is compiled in the first stage and discarded, leaving only the compiled artifacts (JAR / Static Files) in the final image.
+Installation
+1. Clone the repo
+   git clone https://github.com/YOUR_USERNAME/Authfy-Dockerized-SaaS.git
+   cd Authfy-Dockerized-SaaS
 
-2. Nginx Reverse Proxy
+2. Build images and start containers
+   docker-compose up --build
 
-The frontend container uses a custom nginx.conf to handle React routing (Single Page Application support), preventing 404 errors on refresh.
+3. Access the app
+   - Frontend (UI): http://localhost:3000
+   - Backend (API): http://localhost:8080
 
-3. CORS Configuration
+4. Stop the app
+   docker-compose down
 
-The Spring Boot backend is configured to securely accept requests from:
+## Security & DevOps Features
 
-Production: Docker Container (http://localhost:3000)
+1. Multi-stage Docker builds
+   - Builds artifacts in a builder stage and produces minimal production images.
 
-Development: Local Vite Server (http://localhost:5173)
+2. Nginx reverse proxy for frontend
+   - Custom nginx.conf handles SPA routing to prevent 404s on refresh.
 
-4. API Key Security
+3. CORS configuration
+   - Backend configured to accept:
+     - Production (container): http://localhost:3000
+     - Development (Vite): http://localhost:5173
 
-Keys are generated using SecureRandom and never stored in plain text.
+4. API key security
+   - Keys are generated using SecureRandom and shown to users only once (e.g., sk_live_a1b2...).
+   - Only the SHA-256 hash is stored in the database.
+   - Validation hashes the incoming key and compares against stored hashes.
 
-User sees: sk_live_a1b2... (Only once upon creation).
+## Testing the API
 
-Database stores: SHA-256(sk_live_a1b2...).
+Use curl or Postman to test the API key validation filter.
 
-Validation: Incoming keys are hashed and compared against the DB.
+1. Valid request
+   curl -H "x-api-key: sk_live_YOUR_KEY" http://localhost:8080/api/v1/keys
+   # -> 200 OK
 
-🧪 Testing the API
+2. Invalid request
+   curl -H "x-api-key: sk_live_FAKE_KEY" http://localhost:8080/api/v1/keys
+   # -> 401 Unauthorized
 
-You can test the security filter using curl or Postman.
+## Recommended Improvements / Roadmap
 
-1. Valid Request:
-
-curl -H "x-api-key: sk_live_YOUR_KEY" http://localhost:8080/api/v1/keys
-# Returns 200 OK
-
-
-2. Invalid Request:
-
-curl -H "x-api-key: sk_live_FAKE_KEY" http://localhost:8080/api/v1/keys
-# Returns 401 Unauthorized
+- [ ] Cloud deployment (e.g., AWS EC2) using Terraform
+- [ ] CI/CD: GitHub Actions for automated tests and image builds
+- [ ] Rate limiting: Add Redis to throttle requests per API key
+- [ ] Observability: Add Prometheus + Grafana for metrics and alerts
+- [ ] Secrets management: Integrate Vault or cloud KMS for secrets
 
 
-🔮 Future Roadmap
+## Contact
 
-[ ] Cloud Deployment: Deploy to AWS EC2 using Terraform.
+Maintainer: Tharusha Mdhusankha
 
-[ ] CI/CD: Implement GitHub Actions for automated testing and image building.
-
-[ ] Rate Limiting: Add Redis to throttle API usage per key.
