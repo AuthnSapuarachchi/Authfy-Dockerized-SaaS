@@ -1,0 +1,61 @@
+Authfy - Enterprise API Management SaaS
+
+Authfy is a developer-focused Identity & Access Management (IAM) platform. It allows users to generate, manage, and revoke secure API keys for their applications, similar to Stripe or OpenAI.
+
+Architecture: Full-Stack Microservices (Dockerized)
+
+🚀 Tech Stack
+
+Backend: Java 21, Spring Boot 3, Spring Security 6, JPA/Hibernate
+
+Frontend: React.js, Vite, Tailwind CSS
+
+Database: MySQL 8.0
+
+DevOps: Docker, Docker Compose, Nginx, Multi-Stage Builds
+
+Security: BCrypt Hashing, SHA-256 API Key Hashing, JWT Authentication
+
+🛠️ How to Run (The "One-Command" Deploy)
+
+Prerequisites: Docker Desktop installed.
+
+Clone the repository
+
+git clone [https://github.com/YOUR_USERNAME/Authfy-Dockerized-SaaS.git](https://github.com/YOUR_USERNAME/Authfy-Dockerized-SaaS.git)
+cd Authfy-Dockerized-SaaS
+
+
+Start the Infrastructure
+Run this single command to build and start Backend, Frontend, and Network:
+
+docker-compose up --build
+
+
+Access the App
+
+Frontend: http://localhost:3000
+
+Backend API: http://localhost:8080
+
+📂 Project Structure
+
+├── docker-compose.yml      # Orchestration for Full Stack
+├── backend/                # Spring Boot Microservice
+│   ├── Dockerfile          # Multi-Stage Java 21 Build
+│   └── src/
+└── client/                 # React Frontend
+    ├── Dockerfile          # Multi-Stage Node + Nginx Build
+    ├── nginx.conf          # Reverse Proxy Configuration
+    └── src/
+
+
+🔒 Key Features
+
+Dockerized Environment: Consistent runtime across Dev and Prod.
+
+Zero-Knowledge Keys: API Keys are hashed (SHA-256) before storage; even admins cannot see them.
+
+Instant Revocation: "Kill Switch" functionality to ban compromised keys immediately.
+
+CORS Configured: Secure communication between Nginx frontend and Spring backend.
