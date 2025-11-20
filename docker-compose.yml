@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # 1. The Spring Boot Backend
   backend:
-    build: ./authBuilder  # Path to backend folder
+    build: ./backend  # Path to backend folder
     container_name: authfy-app
     ports:
       - "8080:8080"
