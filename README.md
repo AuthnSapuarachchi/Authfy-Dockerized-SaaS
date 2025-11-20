@@ -40,18 +40,18 @@ The project follows a microservices architecture and is orchestrated via Docker 
 ## Project Structure
 
 Authfy-Dockerized-SaaS/
-├── docker-compose.yml      # Main orchestration (full stack)
-│
-├── backend/                # Spring Boot microservice
-│   ├── Dockerfile          # Multi-stage Java 21 build (Maven -> JRE)
-│   ├── src/
-│   └── pom.xml
-│
-└── client/                 # React frontend
-    ├── Dockerfile          # Multi-stage Node + Nginx build
-    ├── nginx.conf          # Nginx routing for SPA
-    ├── src/
-    └── package.json
+-├── docker-compose.yml      # Main orchestration (full stack)
+-│
+-├── backend/                # Spring Boot microservice
+-│   ├── Dockerfile          # Multi-stage Java 21 build (Maven -> JRE)
+-│   ├── src/
+-│   └── pom.xml
+-│
+-└── client/                 # React frontend
+-    ├── Dockerfile          # Multi-stage Node + Nginx build
+-    ├── nginx.conf          # Nginx routing for SPA
+-    ├── src/
+-    └── package.json
 
 ## Quick Start (Run locally)
 
