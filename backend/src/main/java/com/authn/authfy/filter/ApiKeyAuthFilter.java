@@ -2,6 +2,7 @@ package com.authn.authfy.filter;
 
 import com.authn.authfy.entity.ApiKey;
 import com.authn.authfy.repository.ApiKeyRepository;
+import com.authn.authfy.service.RateLimiterService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class ApiKeyAuthFilter extends OncePerRequestFilter {
 
     private final ApiKeyRepository apiKeyRepository;
+    private final RateLimiterService rateLimiterService; // 1. Inject the Rate Limiter
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -44,6 +46,14 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             Optional<ApiKey> apiKeyEntity = apiKeyRepository.findByKeyHash(hashedKey);
 
             if (apiKeyEntity.isPresent() && apiKeyEntity.get().getIsActive()) {
+
+                // 2. CHECK RATE LIMIT BEFORE AUTHENTICATING 🛑
+                if (!rateLimiterService.isRequestAllowed(hashedKey)) {
+                    response.setStatus(429); // HTTP 429 Too Many Requests
+                    response.getWriter().write("Rate limit exceeded. Try again in a minute.");
+                    return; // Stop here
+                }
+
                 // Valid Key! Authenticate the request.
                 ApiKey key = apiKeyEntity.get();
 
