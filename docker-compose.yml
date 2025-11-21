@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+
+  # 2. The Cache (Redis) - NEW ADDITION 🚀
+  redis:
+    image: redis:7-alpine
+    container_name: authfy-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - authfy-net
+    # Standard health check to ensure Redis is ready before Backend starts
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   # 1. The Spring Boot Backend
   backend:
     build: ./backend  # Path to backend folder
@@ -8,11 +24,17 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/authfy_db
+      - SPRING_DATASOURCE_URL=${DB_URL}
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_DATASOURCE_PASSWORD=${DB_ROOT_PASSWORD}
+      # Redis Config - Pointing to the container name 'redis'
+      - SPRING_DATA_REDIS_HOST=${REDIS_HOST}
+      - SPRING_DATA_REDIS_PORT=${REDIS_PORT}
     extra_hosts:
       - "host.docker.internal:host-gateway" # Allows Linux to talk to Windows
+    depends_on:
+      redis:
+        condition: service_healthy # Wait until Redis says "I am ready"
     networks:
       - authfy-net
 
