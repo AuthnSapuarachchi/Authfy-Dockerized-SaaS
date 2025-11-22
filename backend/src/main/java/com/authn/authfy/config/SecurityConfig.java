@@ -44,8 +44,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                                "/swagger-ui.html")
+                        .permitAll()
                         .requestMatchers("/login", "/register", "/send-reset-otp", "/verify-reset-otp",
                                 "/reset-password", "/logout", "/api/v1.0/login")
                         .permitAll()
@@ -71,7 +71,8 @@ public class SecurityConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         // Implement your CORS configuration source here
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:5173", "http://18.139.217.48:3000"));
+        config.setAllowedOrigins(
+                List.of("http://localhost:3000", "http://localhost:5173", "http://18.139.117.10:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
