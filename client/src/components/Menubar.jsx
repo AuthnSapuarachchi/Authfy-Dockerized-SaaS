@@ -79,7 +79,7 @@ const Menubar = () => {
                     height={42}
                 />
                 <span className="navbar-brand mb-0 h4 ms-3 fw-semibold text-primary">
-          AuthBuilder
+          Authfy
         </span>
             </div>
 

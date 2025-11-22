@@ -74,7 +74,7 @@ const Login = () => {
     return (
         <div
             style={{
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
                 minHeight: '100vh',
             }}
         >

@@ -53,3 +53,84 @@ services:
 networks:
   authfy-net:
     driver: bridge
+
+
+
+
+
+
+
+#Production Docker Compose
+# services:
+#   # 1. Redis Cache
+#   redis:
+#     image: redis:7-alpine
+#     container_name: authfy-redis
+#     ports:
+#       - "${REDIS_PORT}:${REDIS_PORT}"
+#     networks:
+#       - authfy-net
+#     healthcheck:
+#       test: ["CMD", "redis-cli", "ping"]
+#       interval: 5s
+#       timeout: 3s
+#       retries: 5
+
+#   # 2. MySQL Database (UPDATED with Healthcheck) 🏥
+#   db:
+#     image: mysql:8.0
+#     container_name: authfy-db
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+#       MYSQL_DATABASE: authfy_db
+#     ports:
+#       - "3306:3306"
+#     networks:
+#       - authfy-net
+#     volumes:
+#       - db_data:/var/lib/mysql  # Persistent data 
+#     # THE FIX: Check if MySQL is ready every 10 seconds
+#     healthcheck:
+#       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+
+#   # 3. Backend API
+#   backend:
+#     image: YOUR_DOCKER_HUB_USERNAME/authfy-backend:latest
+#     container_name: authfy-app
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/authfy_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+#       - SPRING_DATASOURCE_USERNAME=root
+#       - SPRING_DATASOURCE_PASSWORD=${DB_ROOT_PASSWORD}
+#       - SPRING_DATA_REDIS_HOST=${REDIS_HOST}
+#       - SPRING_DATA_REDIS_PORT=${REDIS_PORT}
+#     depends_on:
+#       redis:
+#         condition: service_healthy
+#       db:
+#         condition: service_healthy # <--- WAIT until healthy!
+#     networks:
+#       - authfy-net
+
+#   # 4. Frontend UI
+#   frontend:
+#     image: YOUR_DOCKER_HUB_USERNAME/authfy-frontend:latest
+#     container_name: authfy-ui
+#     ports:
+#       - "3000:80"
+#     depends_on:
+#       - backend
+#     networks:
+#       - authfy-net
+
+# networks:
+#   authfy-net:
+#     driver: bridge
+
+# volumes:
+#   db_data:
