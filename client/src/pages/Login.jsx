@@ -31,7 +31,7 @@ const Login = () => {
 
         try {
             if (isCreateAccount) {
-                // ✅ Registration logic
+                // ✅ Registration logic completed
                 const response = await axios.post(`${backendUrl}/register`, {
                     name,
                     email,
