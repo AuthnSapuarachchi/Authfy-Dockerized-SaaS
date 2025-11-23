@@ -1,5 +1,8 @@
 # Authfy — Enterprise API Management SaaS
 
+<img width="741" height="522" alt="System Architecture drawio" src="https://github.com/user-attachments/assets/739a238f-08ad-4511-b057-4bb1a6ab8064" />
+
+
 A secure, developer-focused Identity & Access Management (IAM) platform that lets SaaS teams issue, manage, and validate API keys for their customers — without reinventing key management.
 
 ## Overview
