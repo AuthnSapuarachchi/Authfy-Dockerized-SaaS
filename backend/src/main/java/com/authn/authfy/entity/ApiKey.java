@@ -28,7 +28,7 @@ public class ApiKey {
     @Column(nullable = false)
     private String name;
 
-    // We store the first 7 chars (e.g., "sk_1234") so the user can identify the key in the UI
+    // We store the first 7 chars (e.g., "sk_1234") so the user can identify the key in the User Interface
     @Column(nullable = false)
     private String keyPrefix;
 
