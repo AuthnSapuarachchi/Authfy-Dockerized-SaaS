@@ -32,7 +32,7 @@ public class ApiKey {
     @Column(nullable = false)
     private String keyPrefix;
 
-    // We store the HASH of the full key. NEVER store the real key in the DB.
+    // We store the HASH of the full key. NEVER store the real key in the Database
     @Column(nullable = false, unique = true)
     private String keyHash;
 
