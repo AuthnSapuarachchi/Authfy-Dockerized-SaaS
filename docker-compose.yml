@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
 
-  # 2. The Cache (Redis) - NEW ADDITION 🚀
+  # 1. The Cache (Redis) - NEW ADDITION 🚀
   redis:
     image: redis:7-alpine
     container_name: authfy-redis
@@ -17,7 +17,7 @@ services:
       timeout: 3s
       retries: 5
 
-  # 1. The Spring Boot Backend
+  # 2. The Spring Boot Backend
   backend:
     build: ./backend  # Path to backend folder
     container_name: authfy-app
@@ -38,7 +38,7 @@ services:
     networks:
       - authfy-net
 
-  # 2. The React Frontend
+  # 3. The React Frontend
   frontend:
     build: ./client  # Path to frontend folder
     container_name: authfy-ui

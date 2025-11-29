@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Menubar from '../components/Menubar';
+import StatsGrid from '../components/StatsGrid';
+import UsageChart from '../components/UsageChart';
+import IntegrationSnippet from '../components/IntegrationSnippet';
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -118,9 +121,19 @@ const Dashboard = () => {
             </button>
           </div>
 
+          {/* --- Stats Grid --- */}
+          <StatsGrid totalKeys={keys.length} totalRequests={15420} />
+
+          {/* --- Usage Chart --- */}
+          <UsageChart />
+
+          {/* --- Integration Snippet --- */}
+          {keys.length > 0 && (
+            <IntegrationSnippet apiKey={keys[0]?.keyPrefix || 'your-api-key-here'} />
+          )}
+
           {/* --- Main Table Section --- */}
-          <div className="card shadow-sm border-0 rounded-3 overflow-hidden">
-            {isLoading ? (
+          <div className="card shadow-sm border-0 rounded-3 overflow-hidden">{isLoading ? (
               <div className="p-5 text-center text-muted">
                 <div className="spinner-border text-primary" role="status">
                   <span className="visually-hidden">Loading...</span>
