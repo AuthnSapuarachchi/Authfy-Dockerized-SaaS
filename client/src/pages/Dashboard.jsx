@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Menubar from '../components/Menubar';
-import StatsGrid from '../components/StatsGrid';
-import UsageChart from '../components/UsageChart';
-import IntegrationSnippet from '../components/IntegrationSnippet';
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -10,18 +7,13 @@ import { toast } from 'react-toastify';
 const Dashboard = () => {
   const { backendUrl, isLoggedIn } = useContext(AppContext);
 
-  // --- State Management Codes---
   const [keys, setKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newKeyName, setNewKeyName] = useState('');
-  
-  // This state holds the secret key IMMEDIATELY after creation (to show it once)
   const [createdKeyData, setCreatedKeyData] = useState(null);
 
-  // --- API Logic ---
-
-  // 1. Fetch Keys on Load
+  // Fetch Keys on Load
   const fetchKeys = async () => {
     try {
       if (!isLoggedIn) {
@@ -45,7 +37,12 @@ const Dashboard = () => {
     }
   };
 
-  // 2. Create a New Key
+  useEffect(() => {
+    fetchKeys();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
+
+  // Create a New Key
   const handleCreateKey = async () => {
     if (!newKeyName.trim()) {
       toast.warning("Please enter a key name");
@@ -57,11 +54,11 @@ const Dashboard = () => {
       const response = await axios.post(`${backendUrl}/keys`, { name: newKeyName });
 
       if (response.status === 200 || response.status === 201) {
-        setCreatedKeyData(response.data); // Store the response (contains the raw key)
-        setShowCreateModal(false); // Close input modal
-        setNewKeyName(''); // Reset name
+        setCreatedKeyData(response.data);
+        setShowCreateModal(false);
+        setNewKeyName('');
         toast.success("API Key created successfully!");
-        fetchKeys(); // Refresh the table list
+        fetchKeys();
       }
     } catch (error) {
       console.error("Error creating key:", error);
@@ -69,7 +66,7 @@ const Dashboard = () => {
     }
   };
 
-  // 3. Revoke (Delete) a Key
+  // Revoke (Delete) a Key
   const handleRevokeKey = async (id) => {
     if (!window.confirm("Are you sure? This will immediately stop any software using this key.")) return;
 
@@ -79,7 +76,7 @@ const Dashboard = () => {
 
       if (response.status === 200) {
         toast.success("Key revoked successfully!");
-        fetchKeys(); // Refresh list to show it's gone/inactive
+        fetchKeys();
       }
     } catch (error) {
       console.error("Failed to revoke", error);
@@ -87,13 +84,6 @@ const Dashboard = () => {
     }
   };
 
-  // Run fetch on component mount
-  useEffect(() => {
-    fetchKeys();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoggedIn]);
-
-  // Helper for the "Copy" button
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     toast.success("Secret Key Copied! Store it safely.");
@@ -108,73 +98,116 @@ const Dashboard = () => {
         <div className="container" style={{ maxWidth: '1200px' }}>
           
           {/* --- Header Section --- */}
-          <div className="d-flex justify-content-between align-items-end mb-4">
+          <div className="d-flex justify-content-between align-items-center mb-4">
             <div>
-              <h1 className="display-5 fw-bold text-dark">Developer Dashboard</h1>
-              <p className="text-muted mt-2">Manage your API keys and secure your applications.</p>
+              <h2 className="fw-bold text-dark mb-1">API Keys</h2>
+              <p className="text-muted mb-0">Manage your authentication keys</p>
             </div>
             <button 
               onClick={() => setShowCreateModal(true)}
-              className="btn btn-primary btn-lg shadow-sm d-flex align-items-center gap-2"
+              className="btn btn-primary d-flex align-items-center gap-2"
             >
-              <span className="fs-4 fw-bold">+</span> Create New Key
+              <span className="fw-bold">+</span> Create Key
             </button>
           </div>
 
-          {/* --- Stats Grid --- */}
-          <StatsGrid totalKeys={keys.length} totalRequests={15420} />
+          {/* --- Quick Stats --- */}
+          <div className="row g-4 mb-4">
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm overflow-hidden" style={{ borderLeft: '4px solid #0d6efd' }}>
+                <div className="card-body p-4">
+                  <div className="d-flex align-items-center">
+                    <div className="flex-shrink-0">
+                      <div className="rounded-3 p-3" style={{ backgroundColor: '#e7f1ff' }}>
+                        <i className="bi bi-stack fs-4 text-primary"></i>
+                      </div>
+                    </div>
+                    <div className="flex-grow-1 ms-3">
+                      <div className="text-muted small text-uppercase fw-semibold mb-1">Total Keys</div>
+                      <div className="h3 fw-bold mb-0 text-dark">{keys.length}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm overflow-hidden" style={{ borderLeft: '4px solid #198754' }}>
+                <div className="card-body p-4">
+                  <div className="d-flex align-items-center">
+                    <div className="flex-shrink-0">
+                      <div className="rounded-3 p-3" style={{ backgroundColor: '#d1e7dd' }}>
+                        <i className="bi bi-check-circle fs-4 text-success"></i>
+                      </div>
+                    </div>
+                    <div className="flex-grow-1 ms-3">
+                      <div className="text-muted small text-uppercase fw-semibold mb-1">Active Keys</div>
+                      <div className="h3 fw-bold mb-0 text-success">{keys.filter(key => key.isActive).length}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm overflow-hidden" style={{ borderLeft: '4px solid #dc3545' }}>
+                <div className="card-body p-4">
+                  <div className="d-flex align-items-center">
+                    <div className="flex-shrink-0">
+                      <div className="rounded-3 p-3" style={{ backgroundColor: '#f8d7da' }}>
+                        <i className="bi bi-shield-x fs-4 text-danger"></i>
+                      </div>
+                    </div>
+                    <div className="flex-grow-1 ms-3">
+                      <div className="text-muted small text-uppercase fw-semibold mb-1">Revoked Keys</div>
+                      <div className="h3 fw-bold mb-0 text-danger">{keys.filter(key => !key.isActive).length}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          {/* --- Usage Chart --- */}
-          <UsageChart />
+        
 
-          {/* --- Integration Snippet --- */}
-          {keys.length > 0 && (
-            <IntegrationSnippet apiKey={keys[0]?.keyPrefix || 'your-api-key-here'} />
-          )}
-
-          {/* --- Main Table Section --- */}
-          <div className="card shadow-sm border-0 rounded-3 overflow-hidden">{isLoading ? (
-              <div className="p-5 text-center text-muted">
+          {/* --- API Keys Table --- */}
+          <div className="card shadow-sm border-0">
+            {isLoading ? (
+              <div className="p-5 text-center">
                 <div className="spinner-border text-primary" role="status">
                   <span className="visually-hidden">Loading...</span>
                 </div>
-                <p className="mt-3">Loading your keys...</p>
+                <p className="mt-3 text-muted">Loading keys...</p>
               </div>
             ) : keys.length === 0 ? (
-              // Empty State
-              <div className="text-center py-5 px-4">
-                <div className="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '64px', height: '64px' }}>
-                  <i className="bi bi-key-fill fs-1 text-primary"></i>
+              <div className="text-center py-5">
+                <div className="mb-3">
+                  <i className="bi bi-key-fill fs-1 text-muted"></i>
                 </div>
-                <h3 className="h5 fw-semibold text-dark">No API keys found</h3>
-                <p className="text-muted mt-2 mx-auto" style={{ maxWidth: '400px' }}>
-                  You haven't created any keys yet. Click the button above to generate your first secure key.
-                </p>
+                <h5 className="text-dark">No API keys yet</h5>
+                <p className="text-muted">Create your first key to get started</p>
               </div>
             ) : (
-              // Table State
               <div className="table-responsive">
                 <table className="table table-hover mb-0">
                   <thead className="table-light">
                     <tr>
-                      <th className="px-4 py-3 text-uppercase small text-muted fw-semibold">Key Name</th>
-                      <th className="px-4 py-3 text-uppercase small text-muted fw-semibold">Prefix</th>
-                      <th className="px-4 py-3 text-uppercase small text-muted fw-semibold">Status</th>
-                      <th className="px-4 py-3 text-uppercase small text-muted fw-semibold">Created At</th>
-                      <th className="px-4 py-3 text-uppercase small text-muted fw-semibold text-end">Actions</th>
+                      <th className="px-4 py-3">Name</th>
+                      <th className="px-4 py-3">Key Prefix</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3">Created</th>
+                      <th className="px-4 py-3 text-end">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {keys.map((key) => (
                       <tr key={key.id}>
-                        <td className="px-4 py-3 fw-semibold text-dark">{key.name}</td>
+                        <td className="px-4 py-3 fw-semibold">{key.name}</td>
                         <td className="px-4 py-3">
-                          <code className="bg-light px-2 py-1 rounded small text-muted">
+                          <code className="bg-light px-2 py-1 rounded small">
                             {key.keyPrefix}
                           </code>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`badge ${key.isActive ? 'bg-success' : 'bg-danger'} px-3 py-2`}>
+                          <span className={`badge ${key.isActive ? 'bg-success' : 'bg-secondary'}`}>
                             {key.isActive ? 'Active' : 'Revoked'}
                           </span>
                         </td>
@@ -199,40 +232,33 @@ const Dashboard = () => {
             )}
           </div>
 
-          {/* --- MODAL 1: Create Key Input --- */}
+          {/* --- Create Key Modal --- */}
           {showCreateModal && (
             <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setShowCreateModal(false)}>
               <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-content">
-                  <div className="modal-header border-0">
-                    <h5 className="modal-title fw-bold">Name Your Key</h5>
+                  <div className="modal-header">
+                    <h5 className="modal-title">Create New API Key</h5>
                     <button type="button" className="btn-close" onClick={() => setShowCreateModal(false)}></button>
                   </div>
                   <div className="modal-body">
-                    <p className="text-muted small mb-3">Give this key a friendly name so you know what it's used for.</p>
-                    
+                    <label className="form-label">Key Name</label>
                     <input 
                       type="text" 
                       autoFocus
-                      placeholder="e.g. Payment Service Production" 
-                      className="form-control form-control-lg"
+                      placeholder="e.g. Production Key" 
+                      className="form-control"
                       value={newKeyName}
                       onChange={(e) => setNewKeyName(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleCreateKey()}
                     />
                   </div>
-                  <div className="modal-footer border-0">
-                    <button 
-                      onClick={() => setShowCreateModal(false)} 
-                      className="btn btn-secondary"
-                    >
+                  <div className="modal-footer">
+                    <button onClick={() => setShowCreateModal(false)} className="btn btn-secondary">
                       Cancel
                     </button>
-                    <button 
-                      onClick={handleCreateKey} 
-                      className="btn btn-primary"
-                    >
-                      Create Key
+                    <button onClick={handleCreateKey} className="btn btn-primary">
+                      Create
                     </button>
                   </div>
                 </div>
@@ -240,41 +266,34 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* --- MODAL 2: Success / Show Secret Key --- */}
+          {/* --- Key Created Success Modal --- */}
           {createdKeyData && (
             <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }} onClick={() => setCreatedKeyData(null)}>
-              <div className="modal-dialog modal-dialog-centered modal-lg" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-content">
                   <div className="modal-body p-4">
                     <div className="text-center mb-4">
-                      <div className="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '64px', height: '64px' }}>
-                        <i className="bi bi-check-circle-fill fs-1 text-success"></i>
-                      </div>
-                      <h3 className="h4 fw-bold text-dark">API Key Generated!</h3>
-                      <p className="text-muted mt-2">
-                        Please copy this key and save it somewhere safe. <br/> 
-                        <span className="text-danger fw-semibold">You will not be able to see it again.</span>
+                      <i className="bi bi-check-circle-fill fs-1 text-success mb-3 d-block"></i>
+                      <h5 className="fw-bold">API Key Created!</h5>
+                      <p className="text-muted small">
+                        Copy this key now. <span className="text-danger">You won't see it again.</span>
                       </p>
                     </div>
                     
-                    <div className="bg-light p-3 rounded border d-flex justify-content-between align-items-center mb-4">
-                      <code className="text-primary flex-grow-1 text-break" style={{ fontSize: '1.1rem' }}>
+                    <div className="bg-light p-3 rounded border d-flex align-items-center mb-3">
+                      <code className="flex-grow-1 text-break small">
                         {createdKeyData.rawKey || createdKeyData.key}
                       </code>
                       <button 
                         onClick={() => copyToClipboard(createdKeyData.rawKey || createdKeyData.key)} 
-                        className="btn btn-sm btn-outline-primary ms-3"
-                        title="Copy to clipboard"
+                        className="btn btn-sm btn-outline-primary ms-2"
                       >
                         <i className="bi bi-clipboard"></i>
                       </button>
                     </div>
 
-                    <button 
-                      onClick={() => setCreatedKeyData(null)} 
-                      className="btn btn-primary w-100 btn-lg"
-                    >
-                      I have saved it
+                    <button onClick={() => setCreatedKeyData(null)} className="btn btn-primary w-100">
+                      Done
                     </button>
                   </div>
                 </div>

@@ -19,4 +19,10 @@ public interface ApiKeyRepository extends JpaRepository<ApiKey, Long> {
     // 3. Find a key by its Hashed value (Used when validating API requests)
     Optional<ApiKey> findByKeyHash(String keyHash);
 
+    // Count ALL keys for a user
+    long countByUserId(Long userId);
+
+    // Count ONLY keys where isActive = true
+    long countByUserIdAndIsActiveTrue(Long userId);
+
 }

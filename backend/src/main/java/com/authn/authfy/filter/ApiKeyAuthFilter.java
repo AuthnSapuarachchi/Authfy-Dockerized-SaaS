@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -27,12 +28,25 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
     private final ApiKeyRepository apiKeyRepository;
     private final RateLimiterService rateLimiterService; // 1. Inject the Rate Limiter
 
+    private final RedisTemplate<String, Object> redisTemplate;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         // 1. Get the API Key from the header "x-api-key"
         String apiKey = request.getHeader("x-api-key");
+
+        // 2. INCREMENT GLOBAL COUNTER IF KEY IS PRESENT
+        if (apiKey != null && !apiKey.isEmpty()) {
+            try {
+                // This creates a key "app:total_requests" in Redis and adds 1
+                redisTemplate.opsForValue().increment("app:total_requests");
+            } catch (Exception e) {
+                // Silent fail: don't stop the request if metrics fail
+                System.err.println("Metrics Error: " + e.getMessage());
+            }
+        }
 
         // 2. If no key is present, skip this filter (maybe they are logging in with user/pass)
         if (apiKey == null || apiKey.isEmpty()) {
