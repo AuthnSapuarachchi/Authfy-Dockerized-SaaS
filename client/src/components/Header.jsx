@@ -8,33 +8,76 @@ const Header = () => {
     const navigate = useNavigate();
 
     return (
-        <div
-            className="text-center d-flex flex-column align-items-center justify-content-center py-5 px-3 bg-light rounded shadow-sm"
-            style={{ minHeight: '80vh', maxWidth: '600px', margin: 'auto' }}
-        >
-            <img src={assets.loginhome} className="mb-4" alt="header" width={140} height={140} />
+        <div className="bg-light py-5">
+            <div className="container" style={{ maxWidth: '1200px' }}>
+                <div className="row align-items-center py-5">
+                    {/* Left Content */}
+                    <div className="col-lg-6 mb-4 mb-lg-0">
+                        <div className="mb-3">
+                            <span className="badge bg-primary bg-opacity-10 text-primary px-3 py-2">
+                                <i className="bi bi-shield-check me-2"></i>
+                                Secure Authentication
+                            </span>
+                        </div>
+                        
+                        <h1 className="display-4 fw-bold text-dark mb-3">
+                            API Key Management<br />
+                            <span className="text-primary">Made Simple</span>
+                        </h1>
+                        
+                        <p className="lead text-muted mb-4">
+                            Manage your API keys securely. Authfy handles authentication 
+                            so you can focus on building your product.
+                        </p>
 
-            <h5 className="fw-semibold mb-3 lh-base">
-                Hey {userData ? userData.name : 'Builder'} <span role="img" aria-label="wave">🚀</span>,<br />
-                Stop reinventing <span className="text-primary">Authentication</span>.<br />
-                <span className="text-muted fs-6">Authfy handles your API keys and security so you can focus on shipping code.</span>
-            </h5>
+                        <div className="d-flex gap-3 mb-4">
+                            <button 
+                                className="btn btn-primary btn-lg px-4"
+                                onClick={() => navigate("/login")}
+                            >
+                                Get Started
+                            </button>
+                            <button 
+                                className="btn btn-outline-secondary btn-lg px-4"
+                                onClick={() => navigate("/dashboard")}
+                            >
+                                Dashboard
+                            </button>
+                        </div>
 
-            <h1 className="fw-bold display-5 mb-4">
-                Authentication, <span className="text-primary">Solved.</span>
-            </h1>
+                        {userData && (
+                            <p className="text-muted small">
+                                Welcome back, <strong>{userData.name}</strong> 👋
+                            </p>
+                        )}
+                    </div>
 
-            <p className="mb-4 text-secondary fs-5 px-3">
-                Don't waste weeks building auth. Authfy gives you a drop-in secure backend for managing API keys. 
-                Focus on your core product while we handle the <strong>cryptography, validation, and security headers</strong>.
-            </p>
-
-            <button className="btn btn-outline-dark rounded-pill px-4 py-2 shadow-sm"
-             onClick={() => navigate("/login")}>
-                Get Started
-            </button>
+                    {/* Right Image */}
+                    <div className="col-lg-6 text-center">
+                        <div className="bg-white rounded-3 shadow-sm p-5 mx-auto" style={{ maxWidth: '400px' }}>
+                            <img 
+                                src={assets.loginhome} 
+                                className="img-fluid mb-4" 
+                                alt="Authfy" 
+                                style={{ maxWidth: '180px' }}
+                            />
+                            <div className="text-start">
+                                <div className="bg-light rounded p-3 mb-2">
+                                    <small className="text-muted">API Key Example</small>
+                                    <div className="mt-2">
+                                        <code className="text-dark small">authfy_pk_abc123xyz...</code>
+                                    </div>
+                                </div>
+                                <div className="d-flex align-items-center text-success">
+                                    <i className="bi bi-check-circle-fill me-2"></i>
+                                    <small>Encrypted & Secure</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
     )
 }
 
