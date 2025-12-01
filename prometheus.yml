@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 5s # Tells Prometheus to ask "How are you?" every 5 seconds.
+
+scrape_configs:
+  # This is the job name that will show up in Grafana
+  - job_name: "authfy-backend"
+
+    # This is the URL path Spring Boot Actuator uses to expose metrics
+    metrics_path: "/api/v1.0/actuator/prometheus"
+
+    static_configs:
+      # This tells Prometheus exactly which container to talk to.
+      # 'authfy-app' is the service name in your docker-compose.yml
+      # '8080' is the internal port inside the Docker network
+      - targets: ["authfy-app:8080"]

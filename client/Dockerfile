@@ -12,7 +12,7 @@ RUN npm install
 # 3. Copy source code
 COPY . .
 
-# 4. Build the app
+# 4. Build the app (will use .env if present, otherwise defaults to localhost)
 # We add --max-old-space-size to prevent memory crashes during build
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
