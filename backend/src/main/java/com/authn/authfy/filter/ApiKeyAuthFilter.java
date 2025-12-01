@@ -61,7 +61,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
 
             if (apiKeyEntity.isPresent() && apiKeyEntity.get().getIsActive()) {
 
-                // 2. CHECK RATE LIMIT BEFORE AUTHENTICATING 🛑
+                // 2. CHECK RATE LIMIT BEFORE AUTHENTICATING 
                 if (!rateLimiterService.isRequestAllowed(hashedKey)) {
                     response.setStatus(429); // HTTP 429 Too Many Requests
                     response.getWriter().write("Rate limit exceeded. Try again in a minute.");
