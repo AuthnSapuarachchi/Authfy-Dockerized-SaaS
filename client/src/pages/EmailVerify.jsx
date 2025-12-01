@@ -105,7 +105,7 @@ const EmailVerify = () => {
                     width={40}
                     className="me-2"
                 />
-                <span className="fs-4 fw-semibold">AuthBuilder</span>
+                <span className="fs-4 fw-semibold">Authfy</span>
             </Link>
 
             <div
