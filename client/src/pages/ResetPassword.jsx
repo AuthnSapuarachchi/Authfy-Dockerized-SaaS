@@ -141,7 +141,7 @@ const ResetPassword = () => {
                 style={{ zIndex: 1000 }}
             >
                 <img src={assets.logo} alt="logo" height={40} width={40} className="me-2" />
-                <span className="fs-4 fw-semibold">AuthBuilder</span>
+                <span className="fs-4 fw-semibold">Authfy</span>
             </Link>
 
             {/* STEP 1: EMAIL FORM */}
