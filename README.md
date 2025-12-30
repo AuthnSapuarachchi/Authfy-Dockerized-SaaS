@@ -52,7 +52,7 @@ Prerequisites
 
 Installation
 1. Clone the repo
-   git clone https://github.com/YOUR_USERNAME/Authfy-Dockerized-SaaS.git
+     git clone https://github.com/AuthnSapuarachchi/Authfy-Dockerized-SaaS.git
    cd Authfy-Dockerized-SaaS
 
 2. Build images and start containers
